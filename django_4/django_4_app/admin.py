@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Product, Director
 
-# Register your models here.
+admin.site.register(Product)
+admin.site.register(Director)
