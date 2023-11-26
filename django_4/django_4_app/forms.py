@@ -1,7 +1,7 @@
 from django import forms
 from .models import Project, Task
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auhth.models import User
+from django.contrib.auth.models import User
 
 
 class RegistrationForm(UserCreationForm):
