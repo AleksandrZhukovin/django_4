@@ -7,8 +7,16 @@ from django.contrib.auth import authenticate, login
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LoginView, LogoutView
+from django.views.generic import TemplateView
 from django.http import HttpResponse
 
+
+class TestPage(TemplateView):
+    template_name = 'test.html'
+
+
+class LogoutPage(LogoutView):
+    pass
 
 class RegistrationView(CreateView):
     template_name = 'registration.html'
@@ -64,10 +72,21 @@ def login_page(request):
         return render(request, 'login.html', {'form': form})
 
 
+class Profile(TemplateView):
+    template_name = 'profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        context['user'] = user
+        return context
+
+
+
 class HomeView(ListView):
     model = Project
+    paginate_by = 2
     template_name = 'home.html'
-    context_object_name = 'projects'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -199,3 +218,18 @@ def project_edit(request, **kwargs):
 # def  form_page(request):
 #     form = LoginForm()
 #     return render(request, 'page3.html', {'form': form})
+
+
+class Pearson:
+    name = ''
+
+    def show_name(self):
+        print(self.name)
+
+
+p1 = Pearson()
+p2 = Pearson()
+p1.name = 'Jack'
+p2.name = 'Bob'
+p1.show_name()
+p2.show_name()

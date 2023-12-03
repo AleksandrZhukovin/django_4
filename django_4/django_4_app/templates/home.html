@@ -5,8 +5,18 @@
     <title>{{ title }}</title>
 </head>
 <body>
-    {% for p in projects %}
+    {% for p in page_obj %}
         <a href="/project/{{ p.id }}">{{ p.name }} </a>
     {% endfor %}
+
+    {% if page_obj.has_previous %}
+        <a href="?page=1">first</a>
+        <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+    {% endif %}
+        <a href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+    {% endif %}
 </body>
 </html>
