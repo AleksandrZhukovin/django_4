@@ -6,9 +6,11 @@
 </head>
 <body>
     <h1>{{ project.name }} <a href="/edit_pr/{{ project.id }}">Edit</a></h1>
-    {% for i in tasks %}
-        <p>{{ i.name }} {{ i.status }} {{ i.deadline }} {{ i.priority }}</p>
-    {% endfor %}
+    <div id="tasks">
+        {% for i in tasks %}
+            <p>{{ i.name }} {{ i.status }} {{ i.deadline }} {{ i.priority }}</p>
+        {% endfor %}
+    </div>
     <form method="post">
         {% csrf_token %}
         {{ form }}

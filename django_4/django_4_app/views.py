@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Project, Task
 from django.urls import reverse_lazy
+from django.template.loader import render_to_string
 from .forms import ProjectForm, TaskForm, RegistrationForm, LoginForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
@@ -8,11 +9,16 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import TemplateView
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 
 class TestPage(TemplateView):
     template_name = 'test.html'
+
+    def post(self, request):
+        data = request.POST
+        return JsonResponse({'resp': data['text']}, safe=False)
+
 
 
 class LogoutPage(LogoutView):
@@ -51,8 +57,20 @@ class LoginPage(LoginView):
     redirect_authenticated_user = True
 
 
-class LogoutPage(LoginPage):
-    pass
+class ProjectCreate(TemplateView):
+    template_name = 'project_create.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = ProjectForm()
+        return context
+
+    def post(self, request):
+        data = request.POST
+        project = Project(name=data['text'])
+        project.save()
+        resp = render_to_string('task.html', {'i': task})
+        return JsonResponse(resp, safe=False)
 
 
 def login_page(request):
@@ -79,8 +97,8 @@ class Profile(TemplateView):
         context = super().get_context_data(**kwargs)
         user = self.request.user
         context['user'] = user
+        context['form'] = ProjectForm()
         return context
-
 
 
 class HomeView(ListView):
@@ -91,6 +109,7 @@ class HomeView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['cookie'] = self.request.COOKIES['name']
+        context['form'] = ProjectForm()
         return context
 
 
