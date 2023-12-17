@@ -8,13 +8,12 @@
     <h1>{{ project.name }} <a href="/edit_pr/{{ project.id }}">Edit</a></h1>
     <div id="tasks">
         {% for i in tasks %}
-            <p>{{ i.name }} {{ i.status }} {{ i.deadline }} {{ i.priority }}</p>
+            <p>{{ i.name }} {{ i.status }} {{ i.deadline }} {{ i.priority }} <button data-url="/project/{{ project.id }}/" class="edit_task" id="{{ i.id }}">Edit</button></p>
         {% endfor %}
+
     </div>
-    <form method="post">
-        {% csrf_token %}
-        {{ form }}
-        <input type="submit">
-    </form>
+    {% csrf_token %}
+    {{ form }}
+    <input id="btn" type="submit" data-url="/project/{{ project.id }}/">
 </body>
 </html>

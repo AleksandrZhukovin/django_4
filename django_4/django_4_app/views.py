@@ -20,9 +20,9 @@ class TestPage(TemplateView):
         return JsonResponse({'resp': data['text']}, safe=False)
 
 
-
 class LogoutPage(LogoutView):
     pass
+
 
 class RegistrationView(CreateView):
     template_name = 'registration.html'
@@ -120,23 +120,35 @@ def home(request):
     return render(request, 'home.html', context)
 
 
-class ProjectView(CreateView):
-    form_class = TaskForm
+class ProjectView(TemplateView):
     template_name = 'project.html'
 
     def get_context_data(self, **kwargs):
-        response = HttpResponse()
-        response.set_cookie('name', 'Bob')
-        self.request.COOKIES['name']
+        # response = HttpResponse()
+        # response.set_cookie('name', 'Bob')
+        # self.request.COOKIES['name']
         context = super().get_context_data(**kwargs)
         project = Project.objects.get(id=self.kwargs['id'])
         tasks = Task.objects.filter(project=project)
         context['project'] = project
         context['tasks'] = tasks
+        context['form'] = TaskForm(initial={'username': 'Bob'})
         return context
 
     def get_success_url(self, **kwargs):
         return f'/project/{self.kwargs["id"]}'
+
+    def post(self, request, **kwargs):
+        data = request.POST
+        if len(data.keys()) == 5:
+            task = Task(name=data['name'], status=True if data['status'] == 'on' else False, deadline='')
+            task.save()
+            resp = render_to_string('task.html', {'i': task})
+            return JsonResponse(resp, safe=False)
+        elif 'id' in data.keys():
+            task = Task.objects.get(id=int(data['id']))
+            resp = render_to_string('edit_form.html', {'form': TaskForm(initial={'name': task.name}), 'id': task.id})
+            return JsonResponse(resp, safe=False)
 
 
 def project(request, **kwargs):

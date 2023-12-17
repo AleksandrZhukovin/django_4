@@ -27,6 +27,8 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ['name', 'status', 'deadline', 'priority']
+        widgets = {'name': forms.TextInput(attrs={'id': 'name'}),
+                   'status': forms.CheckboxInput(attrs={'id': 'status'})}
 
 
 # class FilmForm(forms.Form):
